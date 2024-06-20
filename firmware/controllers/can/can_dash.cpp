@@ -131,7 +131,7 @@ void canDashboardHaltech(CanCycle cycle);
 
 //BMW Dashboard
 //todo: we use 50ms fixed cycle, trace is needed to check for correct period
-static void canDashboardBmwE46(CanCycle cycle) {
+void canDashboardBmwE46(CanCycle cycle) {
 
 	if (cycle.isInterval(CI::_50ms)) {
 	{
