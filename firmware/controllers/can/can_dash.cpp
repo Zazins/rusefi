@@ -137,7 +137,7 @@ static void canDashboardBmwE46(CanCycle cycle) {
         {
             CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
             msg.setShortValue(10 * 8, 1);
-            // Assuming no bitfields to combine for CAN_BMW_E46_SPEED
+            msg.send();  // Ensure the message is sent
         }
 
         // CAN_BMW_E46_RPM message
@@ -145,12 +145,10 @@ static void canDashboardBmwE46(CanCycle cycle) {
             CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
             int rpmValue = (int)(Sensor::getOrZero(SensorType::Rpm) * 6.4);
             msg.setShortValue(rpmValue, 2);
-            // Combine bitfields into specific bytes
-            msg.setShortValue(msg.getShortValue(0) | 0x05, 0);  // Bitfield combined with Indexed Engine Torque
-            msg.setShortValue(msg.getShortValue(1) | 0x0C, 1);  // Bitfield combined with Indicated Engine Torque
-            msg.setShortValue(msg.getShortValue(4) | 0x0C, 4);  // Indicated Engine Torque combined with not used byte
-            msg.setShortValue(msg.getShortValue(5) | 0x15, 5);  // Engine Torque Loss combined with Theoretical Engine Torque
-            msg.setShortValue(0x35, 7);  // Theoretical Engine Torque
+            msg.setShortValue(0x050C, 0);  // Combine bitfield and Indexed Engine Torque
+            msg.setShortValue(0x0C00, 4);  // Combine Indicated Engine Torque and not used byte
+            msg.setShortValue(0x1535, 6);  // Combine Engine Torque Loss and Theoretical Engine Torque
+            msg.send();  // Ensure the message is sent
         }
 
         // CAN_BMW_E46_DME2 message
@@ -158,32 +156,22 @@ static void canDashboardBmwE46(CanCycle cycle) {
             CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME2);
             int cltValue = (int)((Sensor::getOrZero(SensorType::Clt) + 48.373) / 0.75);
             msg.setShortValue(cltValue, 1);
-            // Combine bitfields into specific bytes
-            msg.setShortValue(msg.getShortValue(0) | 0x11, 0);  // Multiplexed Information combined with not used byte (was Baro)
-            msg.setShortValue(0x00, 2);  // Should be Baro according to the original comment, adjust as needed
-            msg.setShortValue(msg.getShortValue(3) | 0x08, 3);  // Bitfield (Clutch and Engine status) combined with TPS_VIRT_CRU_CAN (not used)
-            msg.setShortValue(0x00, 4);  // TPS (TDO)
-            msg.setShortValue(0x00, 5);  // Bitfield (Brake and system status)
-            msg.setShortValue(0x00, 6);  // Bitfield (Brake and system status)
-            msg.setShortValue(0x00, 7);  // Not used
+            msg.setShortValue(0x1100, 0);  // Combine Multiplexed Information and not used byte (was Baro)
+            msg.setShortValue(0x0800, 3);  // Combine bitfield (Clutch and Engine status) and TPS_VIRT_CRU_CAN (not used)
+            msg.setShortValue(0x0000, 5);  // Combine TPS (TDO) and bitfield (Brake and system status)
+            msg.send();  // Ensure the message is sent
         }
 
         // CAN_BMW_E46_DME4 message
         {
             CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
-            // Combine bitfields into specific bytes
-            msg.setShortValue(0x00, 0);  // Multiplexed Information
-            msg.setShortValue(0x00, 1);  // Fuel Consumption LSB
-            msg.setShortValue(0x00, 2);  // Fuel Consumption MSB
-            msg.setShortValue(0x00, 3);  // Overheat light
-            msg.setShortValue(0x7E, 4);  // Oil Temp
-            msg.setShortValue(0x00, 5);  // Not used
-            msg.setShortValue(0x00, 6);  // Not used
-            msg.setShortValue(0x00, 7);  // Not used
+            msg.setShortValue(0x0000, 0);  // Combine Multiplexed Information and Fuel Consumption LSB
+            msg.setShortValue(0x0000, 2);  // Combine Fuel Consumption MSB and Overheat light
+            msg.setShortValue(0x7E00, 4);  // Combine Oil Temp and not used byte
+            msg.send();  // Ensure the message is sent
         }
     }
 }
-
 //todo: we use 50ms fixed cycle, trace is needed to check for correct period
 void canMazdaRX8(CanCycle cycle) {
 	if (cycle.isInterval(CI::_50ms)) {
