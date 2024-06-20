@@ -132,61 +132,41 @@ void canDashboardHaltech(CanCycle cycle);
 //BMW Dashboard
 //todo: we use 50ms fixed cycle, trace is needed to check for correct period
 static void canDashboardBmwE46(CanCycle cycle) {
+    if (cycle.isInterval(CI::_50ms)) {
+        // CAN_BMW_E46_SPEED message
+        {
+            CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
+            msg.setShortValue(10 * 8, 1);
+        }
 
-	if (cycle.isInterval(CI::_50ms)) {
-		{
-			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
-			msg.setShortValue(10 * 8, 1);
-		}
+        // CAN_BMW_E46_RPM message
+        {
+            CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
+            int rpmValue = (int)(Sensor::getOrZero(SensorType::Rpm) * 6.4);
+            msg.setShortValue(rpmValue, 2);
+            msg.setShortValue(0x050C, 0);  // Combine bitfield and Indexed Engine Torque
+            msg.setShortValue(0x0C00, 4);  // Combine Indicated Engine Torque and not used byte
+            msg.setShortValue(0x1535, 6);  // Combine Engine Torque Loss and Theoretical Engine Torque
+        }
 
-		{
-    // Create a CAN message object with the specified category and ID
-    CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
+        // CAN_BMW_E46_DME2 message
+        {
+            CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME2);
+            int cltValue = (int)((Sensor::getOrZero(SensorType::Clt) + 48.373) / 0.75);
+            msg.setShortValue(cltValue, 1);
+            msg.setShortValue(0x1100, 0);  // Combine Multiplexed Information and not used byte (was Baro)
+            msg.setShortValue(0x0800, 3);  // Combine bitfield (Clutch and Engine status) and TPS_VIRT_CRU_CAN (not used)
+            msg.setShortValue(0x0000, 5);  // Combine TPS (TDO) and bitfield (Brake and system status)
+        }
 
-    // Set the RPM value after converting and scaling it
-    msg.setShortValue((int) (Sensor::getOrZero(SensorType::Rpm) * 6.4), 2);
-
-    // Set the buffer elements with specific values
-    msg[0] = 0x05;  // bitfield
-    msg[1] = 0x0C;  // Indexed Engine Torque
-    msg[2] = (uint8_t)((Sensor::getOrZero(SensorType::Rpm) * 6.4) >> 8); // High byte of the short value (RPM)
-    msg[3] = (uint8_t)(Sensor::getOrZero(SensorType::Rpm) * 6.4); // Low byte of the short value (RPM)
-    msg[4] = 0x0C;  // Indicated Engine Torque
-    msg[5] = 0x15;  // Engine Torque Loss
-    msg[6] = 0x00;  // Not used
-    msg[7] = 0x35;  // Theoretical Engine Torque
-
-}
-
-	{
-    // Create a CAN message object with the specified category and ID
-    CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME2);
-
-    // Calculate the CLT value, scale it, and split it into high and low bytes
-    int cltValue = (int) ((Sensor::getOrZero(SensorType::Clt) + 48.373) / 0.75);
-    uint8_t cltHighByte = (cltValue >> 8) & 0xFF;
-    uint8_t cltLowByte = cltValue & 0xFF;
-
-    // Set the buffer elements with specific values
-    msg[0] = 0x11;  // Multiplexed Information
-    msg[1] = cltHighByte;  // High byte of the scaled CLT value
-    msg[2] = cltLowByte;   // Low byte of the scaled CLT value
-    msg[3] = 0x08;  // Bitfield: Bit0 = 0 = Clutch released, Bit3 = 1 = engine running
-    msg[4] = 0x00;  // TPS_VIRT_CRU_CAN (Not used)
-    msg[5] = 0x00;  // TPS (TDO)
-    msg[6] = 0x00;  // Bitfield: Bit0 = 0 = brake not actuated, Bit1 = 0 = brake switch system OK, etc.
-    msg[7] = 0x00;  // Not used
-
-}
-    		{
-			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
-       msg[0] = 0x00;  //Multiplexed Information
-       msg[1] = 0x00;  // Fuel Consumption LSB 
-       msg[2] = 0x00;  // Fuel Consumption MSB
-       msg[3] = 0x00;  // Overheat light
-       msg[4] = 0x7E;  // Oil Temp
-		}
-	}
+        // CAN_BMW_E46_DME4 message
+        {
+            CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
+            msg.setShortValue(0x0000, 0);  // Combine Multiplexed Information and Fuel Consumption LSB
+            msg.setShortValue(0x0000, 2);  // Combine Fuel Consumption MSB and Overheat light
+            msg.setShortValue(0x7E00, 4);  // Combine Oil Temp and not used byte
+        }
+    }
 }
 
 //todo: we use 50ms fixed cycle, trace is needed to check for correct period
