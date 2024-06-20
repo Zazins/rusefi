@@ -144,11 +144,14 @@ static void canDashboardBmwE46(CanCycle cycle) {
         {
             CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
             int rpmValue = (int)(Sensor::getOrZero(SensorType::Rpm) * 6.4);
+            
+            msg[0] = 0x05;  //bitfield, Bit0 = 1 = terminal 15 on detected, Bit2 = 1 = the ASC message ASC1 was received within the last 500 ms and contains no plausibility errors
+            msg[1] = 0x0C;  //Indexed Engine Torque in % of C_TQ_STND TBD do torque calculation.
             msg.setShortValue(rpmValue, 2);
-            msg.setShortValue(0x050C, 0);  // Combine bitfield and Indexed Engine Torque
-            msg.setShortValue(0x0C00, 4);  // Combine Indicated Engine Torque and not used byte
-            msg.setShortValue(0x1535, 6);  // Combine Engine Torque Loss and Theoretical Engine Torque
-            msg.send();  // Ensure the message is sent
+            msg[4] = 0x0C;  //Indicated Engine Torque in % of C_TQ_STND TBD do torque calculation!! Use same as for byte 1
+            msg[5] = 0x15;  //Engine Torque Loss (due to engine friction, AC compressor and electrical power consumption)
+            msg[6] = 0x00;  //not used
+            msg[7] = 0x35;  //Theorethical Engine Torque in % of C_TQ_STND after charge intervention
         }
 
         // CAN_BMW_E46_DME2 message
