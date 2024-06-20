@@ -141,8 +141,8 @@ static void canDashboardBmwE46(CanCycle cycle) {
 
 		{
 			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
-      msg[0] = 0x05;
-      msg[1] = 0x0C;
+      msg[0] = 0x05; // ASC message
+      msg[1] = 0x0C; // Indexed Engine Torque in % of C_TQ_STND TBD
 			msg.setShortValue((int) (Sensor::getOrZero(SensorType::Rpm) * 6.4), 2);
       msg[4] = 0x0C;
       msg[5] = 0x15;
@@ -154,21 +154,27 @@ static void canDashboardBmwE46(CanCycle cycle) {
 			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME2);
       msg[0] = 0x11;
 			msg.setShortValue((int) ((Sensor::getOrZero(SensorType::Clt) + 48.373) / 0.75), 1);
-      msg[2] = 0x00;
+      msg[2] = 0x00; // baro sensor
       msg[3] = 0x08;
-      msg[4] = 0x00;
-      msg[5] = 0x00;
-      msg[6] = 0x00;
-      msg[7] = 0x00;
+      msg[4] = 0x00; // TPS_VIRT_CRU_CAN, not used.
+      msg[5] = 0x00; // TPS out, but we set to 0 just in case.
+      msg[6] = 0x00; // brake system status Ok. 
+      msg[7] = 0x00; // not used
 		}
-    		{
-			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
-      msg[0] = 0x00;
-	    msg[1] = 0x00; 
-      msg[2] = 0x00;
-      msg[3] = 0x08;
-      msg[4] = 0x7E;
-		}
+{
+    CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
+
+    // Check if coolant temperature is over 120 or sensor is not valid
+    if (clt.Valid && clt.Value > 120) {
+        msg[3] = 0x08;  // Set bit 3 to 0x08 if coolant temp > 120
+    } else if (!clt.Valid) {
+        msg[3] = 0x08;  // Set bit 3 to 0x08 if sensor is not valid
+    } else {
+        msg[3] = 0x00;  // Set bit 3 to 0x00 otherwise
+    }
+
+    msg[4] = 0x7E; // Oil temperature. Not used in regular cluster.
+}
 	}
 }
 
