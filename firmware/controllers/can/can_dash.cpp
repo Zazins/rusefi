@@ -131,20 +131,20 @@ void canDashboardHaltech(CanCycle cycle);
 
 //BMW Dashboard
 //todo: we use 50ms fixed cycle, trace is needed to check for correct period
-void canDashboardBmwE46(CanCycle cycle) {
+static void canDashboardBmwE46(CanCycle cycle) {
 
 	if (cycle.isInterval(CI::_50ms)) {
 	{
             CanTxMessage outMsg(CanCategory::NBC, CAN_BMW_E46_RPM);
-            outMsg.buf[0] = 0x05;  // bitfield
-            outMsg.buf[1] = 0x0C;  // Indexed Engine Torque
+            msg.buf[0] = 0x05;  // bitfield
+            msg.buf[1] = 0x0C;  // Indexed Engine Torque
           	CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
 			              msg.setShortValue(10 * 8, 1);
     
-            outMsg.buf[4] = 0x0C;  // Indicated Engine Torque
-            outMsg.buf[5] = 0x15;  // Engine Torque Loss
-            outMsg.buf[6] = 0x00;  // not used
-            outMsg.buf[7] = 0x35;  // Theoretical Engine Torque
+            msg.buf[4] = 0x0C;  // Indicated Engine Torque
+            msg.buf[5] = 0x15;  // Engine Torque Loss
+            msg.buf[6] = 0x00;  // not used
+            msg.buf[7] = 0x35;  // Theoretical Engine Torque
 
         }
 
