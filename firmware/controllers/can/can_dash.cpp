@@ -153,6 +153,13 @@ static void canDashboardBmwE46(CanCycle cycle) {
 		{
 			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME2);
 			msg.setShortValue((int) ((Sensor::getOrZero(SensorType::Clt) + 48.373) / 0.75), 1);
+       msg[0] = 0x11;  //Multiplexed Information
+       msg[2] = 0x00;  //(Should be Baro)
+       msg[3] = 0x08;  //bitfield, Bit0 = 0 = Clutch released, Bit 3 = 1 = engine running
+       msg[4] = 0x00;  //TPS_VIRT_CRU_CAN (Not used)
+       msg[5] = 0x00;  //TPS (TDO) 
+       msg[6] = 0x00;  //bitfield, Bit0 = 0 = brake not actuated, Bit1 = 0 = brake switch system OK etc...
+       msg[7] = 0x00;  //(Not used)
 		}
 	}
 }
