@@ -468,12 +468,14 @@
 
 #define AUX_SERIAL_DEVICE (&SD6)
 
+#define STM32_SERIAL_USE_USART1=TRUE
+
 #ifndef EFI_CONSOLE_TX_BRAIN_PIN
-#define EFI_CONSOLE_TX_BRAIN_PIN Gpio::C10
+#define EFI_CONSOLE_TX_BRAIN_PIN Gpio::A9
 #endif
 
 #ifndef EFI_CONSOLE_RX_BRAIN_PIN
-#define EFI_CONSOLE_RX_BRAIN_PIN Gpio::C11
+#define EFI_CONSOLE_RX_BRAIN_PIN Gpio::A10
 #endif
 // todo: this should be detected automatically based on pin selection
 // https://github.com/rusefi/rusefi/issues/3536
@@ -493,8 +495,8 @@
 
 // USART1 -> check defined STM32_SERIAL_USE_USART1
 // For GPS we have USART1. We can start with PB7 USART1_RX and PB6 USART1_TX
-#define GPS_SERIAL_DEVICE &SD1
-#define GPS_SERIAL_SPEED 38400
+//#define GPS_SERIAL_DEVICE &SD1
+//#define GPS_SERIAL_SPEED 38400
 
 #ifndef EFI_SENT_SUPPORT
 #define EFI_SENT_SUPPORT        FALSE
