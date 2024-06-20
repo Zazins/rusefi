@@ -134,19 +134,16 @@ void canDashboardHaltech(CanCycle cycle);
 static void canDashboardBmwE46(CanCycle cycle) {
 
 	if (cycle.isInterval(CI::_50ms)) {
-	{
-            CanTxMessage outMsg(CanCategory::NBC, CAN_BMW_E46_RPM);
-            msg.buf[0] = 0x05;  // bitfield
-            msg.buf[1] = 0x0C;  // Indexed Engine Torque
-          	CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
-			              msg.setShortValue(10 * 8, 1);
-    
-            msg.buf[4] = 0x0C;  // Indicated Engine Torque
-            msg.buf[5] = 0x15;  // Engine Torque Loss
-            msg.buf[6] = 0x00;  // not used
-            msg.buf[7] = 0x35;  // Theoretical Engine Torque
-
-        }
+		{
+			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
+			msg.setShortValue(10 * 8, 1);
+      msg[0] = 0x05;  // bitfield
+      msg[1] = 0x0C;  // Indexed Engine Torque
+      msg[4] = 0x0C;  // Indicated Engine Torque
+      msg[5] = 0x15;  // Engine Torque Loss
+      msg[6] = 0x00;  // not used
+      msg[7] = 0x35;  // Theoretical Engine Torque
+		}
 
 		{
 			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
