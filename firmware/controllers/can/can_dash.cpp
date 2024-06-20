@@ -137,17 +137,17 @@ static void canDashboardBmwE46(CanCycle cycle) {
 		{
 			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
 			msg.setShortValue(10 * 8, 1);
+		}
+
+		{
+			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
+			msg.setShortValue((int) (Sensor::getOrZero(SensorType::Rpm) * 6.4), 2);
       msg[0] = 0x05;  // bitfield
       msg[1] = 0x0C;  // Indexed Engine Torque
       msg[4] = 0x0C;  // Indicated Engine Torque
       msg[5] = 0x15;  // Engine Torque Loss
       msg[6] = 0x00;  // not used
       msg[7] = 0x35;  // Theoretical Engine Torque
-		}
-
-		{
-			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
-			msg.setShortValue((int) (Sensor::getOrZero(SensorType::Rpm) * 6.4), 2);
 		}
 
 		{
