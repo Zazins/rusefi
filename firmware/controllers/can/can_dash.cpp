@@ -132,49 +132,25 @@ void canDashboardHaltech(CanCycle cycle);
 //BMW Dashboard
 //todo: we use 50ms fixed cycle, trace is needed to check for correct period
 static void canDashboardBmwE46(CanCycle cycle) {
-    if (cycle.isInterval(CI::_50ms)) {
-        // CAN_BMW_E46_SPEED message
-        {
-            CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
-            msg.setShortValue(10 * 8, 1);
-            msg.send();  // Ensure the message is sent
-        }
 
-        // CAN_BMW_E46_RPM message
-        {
-            CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
-            int rpmValue = (int)(Sensor::getOrZero(SensorType::Rpm) * 6.4);
-            
-            msg[0] = 0x05;  //bitfield, Bit0 = 1 = terminal 15 on detected, Bit2 = 1 = the ASC message ASC1 was received within the last 500 ms and contains no plausibility errors
-            msg[1] = 0x0C;  //Indexed Engine Torque in % of C_TQ_STND TBD do torque calculation.
-            msg.setShortValue(rpmValue, 2);
-            msg[4] = 0x0C;  //Indicated Engine Torque in % of C_TQ_STND TBD do torque calculation!! Use same as for byte 1
-            msg[5] = 0x15;  //Engine Torque Loss (due to engine friction, AC compressor and electrical power consumption)
-            msg[6] = 0x00;  //not used
-            msg[7] = 0x35;  //Theorethical Engine Torque in % of C_TQ_STND after charge intervention
-        }
+	if (cycle.isInterval(CI::_50ms)) {
+		{
+			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_SPEED);
+			msg.setShortValue(10 * 8, 1);
+		}
 
-        // CAN_BMW_E46_DME2 message
-        {
-            CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME2);
-            int cltValue = (int)((Sensor::getOrZero(SensorType::Clt) + 48.373) / 0.75);
-            msg.setShortValue(cltValue, 1);
-            msg.setShortValue(0x1100, 0);  // Combine Multiplexed Information and not used byte (was Baro)
-            msg.setShortValue(0x0800, 3);  // Combine bitfield (Clutch and Engine status) and TPS_VIRT_CRU_CAN (not used)
-            msg.setShortValue(0x0000, 5);  // Combine TPS (TDO) and bitfield (Brake and system status)
-            msg.send();  // Ensure the message is sent
-        }
+		{
+			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
+			msg.setShortValue((int) (Sensor::getOrZero(SensorType::Rpm) * 6.4), 2);
+		}
 
-        // CAN_BMW_E46_DME4 message
-        {
-            CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
-            msg.setShortValue(0x0000, 0);  // Combine Multiplexed Information and Fuel Consumption LSB
-            msg.setShortValue(0x0000, 2);  // Combine Fuel Consumption MSB and Overheat light
-            msg.setShortValue(0x7E00, 4);  // Combine Oil Temp and not used byte
-            msg.send();  // Ensure the message is sent
-        }
-    }
+		{
+			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME2);
+			msg.setShortValue((int) ((Sensor::getOrZero(SensorType::Clt) + 48.373) / 0.75), 1);
+		}
+	}
 }
+
 //todo: we use 50ms fixed cycle, trace is needed to check for correct period
 void canMazdaRX8(CanCycle cycle) {
 	if (cycle.isInterval(CI::_50ms)) {
