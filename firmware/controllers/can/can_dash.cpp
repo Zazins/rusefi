@@ -161,6 +161,14 @@ static void canDashboardBmwE46(CanCycle cycle) {
       msg[6] = 0x00;
       msg[7] = 0x00;
 		}
+    		{
+			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
+      msg[0] = 0x00;
+	    msg[1] = 0x00; 
+      msg[2] = 0x00;
+      msg[3] = 0x08;
+      msg[4] = 0x7E;
+		}
 	}
 }
 
