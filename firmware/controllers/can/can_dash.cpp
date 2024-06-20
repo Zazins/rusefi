@@ -152,7 +152,14 @@ static void canDashboardBmwE46(CanCycle cycle) {
 
 		{
 			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME2);
+      msg[0] = 0x11;
 			msg.setShortValue((int) ((Sensor::getOrZero(SensorType::Clt) + 48.373) / 0.75), 1);
+      msg[2] = 0x00;
+      msg[3] = 0x08;
+      msg[4] = 0x00;
+      msg[5] = 0x00;
+      msg[6] = 0x00;
+      msg[7] = 0x00;
 		}
 	}
 }
