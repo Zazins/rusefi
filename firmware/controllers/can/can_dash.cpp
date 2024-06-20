@@ -161,11 +161,6 @@ static void canDashboardBmwE46(CanCycle cycle) {
       msg[6] = 0x00; // brake system status Ok. 
       msg[7] = 0x00; // not used
 		}
-{
-    CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
-  
-    msg[4] = 0x7E; // Oil temperature. Not used in regular cluster.
-}
 	}
 }
 
