@@ -161,6 +161,14 @@ static void canDashboardBmwE46(CanCycle cycle) {
        msg[6] = 0x00;  //bitfield, Bit0 = 0 = brake not actuated, Bit1 = 0 = brake switch system OK etc...
        msg[7] = 0x00;  //(Not used)
 		}
+    		{
+			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
+       msg[0] = 0x00;  //Multiplexed Information
+       msg[1] = 0x00;  // Fuel Consumption LSB 
+       msg[2] = 0x00;  // Fuel Consumption MSB
+       msg[3] = 0x00;  // Overheat light
+       msg[4] = 0x7E;  // Oil Temp
+		}
 	}
 }
 
