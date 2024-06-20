@@ -470,11 +470,11 @@
 
 
 #ifndef EFI_CONSOLE_TX_BRAIN_PIN
-#define EFI_CONSOLE_TX_BRAIN_PIN Gpio::A9
+#define EFI_CONSOLE_TX_BRAIN_PIN Gpio::D5
 #endif
 
 #ifndef EFI_CONSOLE_RX_BRAIN_PIN
-#define EFI_CONSOLE_RX_BRAIN_PIN Gpio::A10
+#define EFI_CONSOLE_RX_BRAIN_PIN Gpio::D6
 #endif
 // todo: this should be detected automatically based on pin selection
 // https://github.com/rusefi/rusefi/issues/3536
