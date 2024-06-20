@@ -141,7 +141,13 @@ static void canDashboardBmwE46(CanCycle cycle) {
 
 		{
 			CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_RPM);
+      msg[0] = 0x05;
+      msg[1] = 0x0C;
 			msg.setShortValue((int) (Sensor::getOrZero(SensorType::Rpm) * 6.4), 2);
+      msg[4] = 0x0C;
+      msg[5] = 0x15;
+      msg[6] = 0x00;
+      msg[7] = 0x35;
 		}
 
 		{
