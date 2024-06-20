@@ -163,16 +163,7 @@ static void canDashboardBmwE46(CanCycle cycle) {
 		}
 {
     CanTxMessage msg(CanCategory::NBC, CAN_BMW_E46_DME4);
-
-    // Check if coolant temperature is over 120 or sensor is not valid
-    if (clt.Valid && clt.Value > 120) {
-        msg[3] = 0x08;  // Set bit 3 to 0x08 if coolant temp > 120
-    } else if (!clt.Valid) {
-        msg[3] = 0x08;  // Set bit 3 to 0x08 if sensor is not valid
-    } else {
-        msg[3] = 0x00;  // Set bit 3 to 0x00 otherwise
-    }
-
+  
     msg[4] = 0x7E; // Oil temperature. Not used in regular cluster.
 }
 	}
